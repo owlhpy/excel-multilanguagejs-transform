@@ -1,5 +1,5 @@
 {
-  "name": "excel-to-js",
+  "name": "excel-multilanguagejs-transform",
   "version": "1.0.0",
   "description": "将excel的内容转成对应格式多语言js文件",
   "main": "dist/index-cjs.js",
