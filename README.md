@@ -1,9 +1,10 @@
-# excel-multiLanguageJs-transform
-Generate js in multilingual file format through excel
+# excel-multilanguagejs-transform
+Generate js in multi-language file format through excel
 
 ### Install
+#### node version:v16.0.0+
 ```console()
-npm install excel-multiLanguageJs-transform -D
+npm install excel-multilanguagejs-transform -D
 ```
 ### Usage
 
