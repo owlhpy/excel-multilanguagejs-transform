@@ -36,10 +36,10 @@ cnpm install excel-multilanguagejs-transform -D
 ### Usage
 example:
 ```
-const { genMutilLang, defaultConfig } = require('excel-multilanguagejs-transform')
+const { genMultiLang, defaultConfig } = require('excel-multilanguagejs-transform')
 const fs = require('node:fs');
 const path = require('node:path')
-genMutilLang({ outputFolderPath: path.resolve('./testplugins/genFiles'), xlsFilePath: path.resolve('./testplugins/mutilLang.xlsx') }, fs);
+genMultiLang({ outputFolderPath: path.resolve('./testplugins/genFiles'), xlsFilePath: path.resolve('./testplugins/mutilLang.xlsx') }, fs);
 
 ```
 maybe you will need this setting in webpack.config.json in order to require fs module, webpack version v5+
@@ -48,7 +48,7 @@ externalsPresets: {
 node:true
 },
 ```
-genMutilLang(setting,fs)
+genMultiLang(setting,fs)
 ```
 default setting:  
 
