@@ -1,10 +1,51 @@
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    enumerableOnly && (symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    })), keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+    });
+  }
+
+  return target;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
 var xlsx = require("node-xlsx"); // var fs = require("fs") 
 
 
-const defaultConfig = {
+var defaultConfig = {
   outputFolderPath: './genFiles',
   //生成文件的输出目录
-  xlsFilePath: './mutilLang.xlsx',
+  xlsFilePath: './multiLang.xlsx',
   //读取的xls文件路径
   keyValueObj: {
     'zh_CN': {
@@ -27,10 +68,6 @@ const defaultConfig = {
     }
   },
   //excel表格对应的列
-  readXlsSetting: {
-    startFromIndex: 1,
-    tableIndex: 0
-  },
   startFromIndex: 1,
   //从表格第几行开始读取数据
   tableIndex: 0,
@@ -51,7 +88,7 @@ function readXls(path, outputPath, fs) {
       }
     }
 
-    const tableData = xlsx.parse(`${path}`);
+    var tableData = xlsx.parse("".concat(path));
     return tableData;
   } catch (error) {
     console.log("excel读取异常,error=%s", error);
@@ -59,60 +96,62 @@ function readXls(path, outputPath, fs) {
   }
 }
 
-function genMutilLang(config, fs) {
-  const currentConfig = { ...defaultConfig,
-    ...config
-  };
-  console.log(currentConfig);
-  const tableData = readXls(currentConfig.xlsFilePath, currentConfig.outputFolderPath, fs);
-  const {
-    keyValueObj,
-    arrGenDataType
-  } = currentConfig;
+function genMultiLang(config, fs) {
+  var currentConfig = _objectSpread2(_objectSpread2({}, defaultConfig), config);
+
+  var tableData = readXls(currentConfig.xlsFilePath, currentConfig.outputFolderPath, fs);
+  var keyValueObj = currentConfig.keyValueObj,
+      arrGenDataType = currentConfig.arrGenDataType;
 
   if (tableData) {
-    const table0 = tableData[`${currentConfig.tableIndex}`]; //选取第几个表格
+    var index;
 
-    const data = table0.data.slice(currentConfig.startFromIndex);
-    let files = new Map();
-    Object.keys(keyValueObj).map(item => {
-      if (arrGenDataType.includes(item)) {
-        files.set(`${item}`, {
-          key: keyValueObj[item],
-          content: []
-        });
-      } else {
-        files.set(`${item}`, {
-          key: keyValueObj[item],
-          content: {}
+    (function () {
+      var table0 = tableData["".concat(currentConfig.tableIndex)]; //选取第几个表格
+
+      var data = table0.data.slice(currentConfig.startFromIndex);
+      var files = new Map();
+      Object.keys(keyValueObj).map(function (item) {
+        if (arrGenDataType.includes(item)) {
+          files.set("".concat(item), {
+            key: keyValueObj[item],
+            content: []
+          });
+        } else {
+          files.set("".concat(item), {
+            key: keyValueObj[item],
+            content: {}
+          });
+        }
+      });
+
+      for (index in data) {
+        files.forEach(function (value, key, map) {
+          var temp = value.content;
+
+          if (value.key.valueFormat) {
+            data[index][value.key.key] && temp.push("\r ".concat(data[index][value.key.key], ":").concat(value.key.valueFormat.replace(/\$\{data\}/gi, data[index][value.key.value])));
+          } else {
+            temp[data[index][value.key.key]] = data[index][value.key.value];
+          }
+
+          files.set("".concat(key), _objectSpread2(_objectSpread2({}, value), {}, {
+            content: temp
+          }));
         });
       }
-    });
 
-    for (var index in data) {
-      files.forEach((value, key, map) => {
-        let temp = value.content;
+      files.forEach(function (value, key, map) {
+        var _value$key, _value$key$exportForm;
 
-        if (value.key.valueFormat) {
-          data[index][value.key.key] && temp.push(`\r ${data[index][value.key.key]}:${value.key.valueFormat.replace(/\$\{data\}/gi, data[index][value.key.value])}`);
-        } else {
-          temp[data[index][value.key.key]] = data[index][value.key.value];
-        }
-
-        files.set(`${key}`, { ...value,
-          content: temp
+        var temp = (_value$key = value.key) === null || _value$key === void 0 ? void 0 : (_value$key$exportForm = _value$key.exportFormat) === null || _value$key$exportForm === void 0 ? void 0 : _value$key$exportForm.split('${data}');
+        var formater = (temp ? "".concat(temp[0]).concat(value.content).concat(temp[1]) : '') || "module.exports=".concat(JSON.stringify(value.content, null, "\t"));
+        fs.writeFile("".concat(currentConfig.outputFolderPath, "/").concat(key, ".js"), formater, function (err, data) {
+          if (err) throw err;
         });
       });
-    }
-
-    files.forEach((value, key, map) => {
-      let temp = value.key?.exportFormat?.split('${data}');
-      let formater = (temp ? `${temp[0]}${value.content}${temp[1]}` : '') || `module.exports=${JSON.stringify(value.content, null, "\t")}`;
-      fs.writeFile(`${currentConfig.outputFolderPath}/${key}.js`, formater, (err, data) => {
-        if (err) throw err;
-      });
-    });
+    })();
   }
 }
 
-export { defaultConfig, genMutilLang };
+export { defaultConfig, genMultiLang };

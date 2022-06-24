@@ -1,10 +1,10 @@
 /*
  * @Author: peiyanh
  * @Date: 2022-06-05 17:27:58
- * @LastEditTime: 2022-06-22 17:29:57
+ * @LastEditTime: 2022-06-24 10:26:15
  * @LastEditors: peiyanh
  * @Description: 
- * @FilePath: /learn/excel-to-js/rollup.config.js
+ * @FilePath: /learn/excel-multilanguagejs-transform/rollup.config.js
  * Copyright (c) 2004-2021 i-Sprint Technologies, Inc.
  *  address: 
  *  All rights reserved. 
@@ -49,7 +49,7 @@ export default {
 	plugins: [
 		nodePolyfills(),
 		commonjs(),
-		babel({ babelHelpers: 'bundled', extensions: ['.js'] }),
+		babel({ babelHelpers: 'bundled', extensions: ['.js'], presets: ['@babel/preset-env'] }),
 		nodeResolve(),
 		dev({ force: true })
 	]
