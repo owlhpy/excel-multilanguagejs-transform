@@ -32,6 +32,7 @@
     "type": "git",
     "directory": "https://github.com/owlhpy/excel-multilanguagejs-transform"
   },
+  "homepage": "https://github.com/owlhpy/excel-multilanguagejs-transform",
   "author": "owlhpy",
   "license": "MIT"
 }
