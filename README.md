@@ -43,6 +43,12 @@ const path = require('node:path')
 genMutilLang({ outputFolderPath: path.resolve('./testplugins/genFiles'), xlsFilePath:path.resolve('./testplugins/mutilLang.xlsx')}, fs);
 
 ```
+maybe you will need this setting in webpack.config.json in order to require fs module, webpack version v5+
+```console
+externalsPresets: {
+node:true
+},
+```
 genMutilLang(setting,fs)
 ```
 default setting:  
